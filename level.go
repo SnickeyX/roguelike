@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -10,30 +11,41 @@ import (
 // Level holds the tile information for a complete dungeon level.
 type Level struct {
 	// Tiles are ordered row-by-row, left-to-right
-	Tiles []MapTile
-	Rooms []Rect
+	Tiles     []MapTile
+	Rooms     []Rect
+	PlayerLoc []int
+	FovDist   float64 // radius of player FOV
 }
 
 // NewLevel creates a new game level in a dungeon.
 func NewLevel() Level {
 	l := Level{}
-	rooms := make([]Rect, 0)
-	l.Rooms = rooms
+	l.FovDist = 6
+	l.PlayerLoc = make([]int, 2)
+	l.Rooms = make([]Rect, 0)
 	l.GenerateLevelTiles()
 	return l
 }
 
 type MapTile struct {
-	PixelX  int
-	PixelY  int
-	Blocked bool
-	Image   *ebiten.Image
+	PixelX     int
+	PixelY     int
+	Blocked    bool
+	IsRevealed bool
+	Image      *ebiten.Image
 }
 
 // GetIndexFromXY gets the index of the map array from a given X,Y TILE coordinate.
-func (level *Level) GetIndexFromXY(x int, y int) int {
+func (level *Level) GetIndexFromXY(x, y int) int {
 	gd := NewGameData()
 	return (y * gd.ScreenWidth) + x
+}
+
+func (level *Level) IsVizToPlayer(x, y int) bool {
+	px, py := level.PlayerLoc[0], level.PlayerLoc[1]
+	// euclidian dist
+	d := math.Sqrt(math.Pow(float64(y-py), 2) + math.Pow(float64(x-px), 2))
+	return d < level.FovDist
 }
 
 // everything is a wall initially
@@ -48,10 +60,11 @@ func (level *Level) CreateTiles() []MapTile {
 				log.Fatal(err)
 			}
 			tile := MapTile{
-				PixelX:  x * gd.TileWidth,
-				PixelY:  y * gd.TileHeight,
-				Blocked: true,
-				Image:   wall,
+				PixelX:     x * gd.TileWidth,
+				PixelY:     y * gd.TileHeight,
+				Blocked:    true,
+				IsRevealed: false,
+				Image:      wall,
 			}
 			tiles[index] = tile
 		}

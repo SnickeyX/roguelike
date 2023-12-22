@@ -13,9 +13,11 @@ import (
 
 // Game struct to hold all global data
 type Game struct {
-	Map       GameMap
-	World     *ecs.Manager
-	WorldTags map[string]ecs.Tag
+	Map         GameMap
+	World       *ecs.Manager
+	WorldTags   map[string]ecs.Tag
+	Turn        TurnState
+	TurnCounter int
 }
 
 func NewGame() *Game {
@@ -24,12 +26,18 @@ func NewGame() *Game {
 	world, tags := InitializeWorld(g.Map.CurrentLevel)
 	g.World = world
 	g.WorldTags = tags
+	g.Turn = PlayerTurn
+	g.TurnCounter = 0
 	return g
 }
 
 // update frame at each tic, 60hz by defualt
 func (g *Game) Update() error {
-	TryMovePlayer(g)
+	g.TurnCounter++
+	if g.Turn == PlayerTurn && g.TurnCounter > 10 {
+		TryMovePlayer(g)
+	}
+	g.Turn = PlayerTurn
 	return nil
 }
 
@@ -37,10 +45,22 @@ func (lvl *Level) DrawLevel(screen *ebiten.Image) {
 	gd := NewGameData()
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
-			tile := lvl.Tiles[lvl.GetIndexFromXY(x, y)]
-			op := &ebiten.DrawImageOptions{}
-			op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
-			screen.DrawImage(tile.Image, op)
+			index := lvl.GetIndexFromXY(x, y)
+			isViz := lvl.IsVizToPlayer(x, y)
+			tile := lvl.Tiles[index]
+			if isViz {
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
+				screen.DrawImage(tile.Image, op)
+				lvl.Tiles[index].IsRevealed = true
+
+			} else if tile.IsRevealed {
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
+				op.ColorScale.ScaleAlpha(0.5)
+				screen.DrawImage(tile.Image, op)
+			}
+
 		}
 	}
 }

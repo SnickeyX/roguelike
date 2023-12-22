@@ -29,7 +29,8 @@ func TryMovePlayer(g *Game) {
 		pos := result.Components[position].(*Position)
 		new_x := (pos.X + x) % gd.ScreenWidth
 		new_y := (pos.Y + y)
-		// silly out-of-bounds prot
+
+		// out-of-bounds prot
 		if new_y <= 0 {
 			new_y = gd.ScreenHeight - 1
 		}
@@ -41,8 +42,14 @@ func TryMovePlayer(g *Game) {
 		tile := level.Tiles[index]
 
 		if !tile.Blocked {
+			level.PlayerLoc[0], level.PlayerLoc[1] = new_x, new_y
 			pos.X = new_x
 			pos.Y = new_y
 		}
+	}
+
+	if x != 0 || y != 0 {
+		g.Turn = GetNextState(g.Turn)
+		g.TurnCounter = 0
 	}
 }

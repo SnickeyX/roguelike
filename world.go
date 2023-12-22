@@ -25,6 +25,8 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	// to ensure player always starts in a room and not a wall
 	startingRoom := startingLevel.Rooms[0]
 	x, y := startingRoom.Center()
+	// init player location
+	startingLevel.PlayerLoc[0], startingLevel.PlayerLoc[1] = x, y
 
 	playerImg, _, err := ebitenutil.NewImageFromFile("assets/player.png")
 	if err != nil {
