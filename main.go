@@ -6,27 +6,29 @@ package main
 import (
 	"log"
 
+	"github.com/SnickeyX/roguelike/state"
+	"github.com/SnickeyX/roguelike/utils"
+	"github.com/SnickeyX/roguelike/world"
 	"github.com/bytearena/ecs"
-
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Game struct to hold all global data
 type Game struct {
-	Map         GameMap
+	Map         world.GameMap
 	World       *ecs.Manager
 	WorldTags   map[string]ecs.Tag
-	Turn        TurnState
+	Turn        state.TurnState
 	TurnCounter int
 }
 
 func NewGame() *Game {
 	g := &Game{}
-	g.Map = NewGameMap()
-	world, tags := InitializeWorld(g.Map.CurrentLevel)
+	g.Map = world.NewGameMap()
+	world, tags := world.InitializeWorld(g.Map.CurrentLevel)
 	g.World = world
 	g.WorldTags = tags
-	g.Turn = PlayerTurn
+	g.Turn = state.PlayerTurn
 	g.TurnCounter = 0
 	return g
 }
@@ -34,35 +36,11 @@ func NewGame() *Game {
 // update frame at each tic, 60hz by defualt
 func (g *Game) Update() error {
 	g.TurnCounter++
-	if g.Turn == PlayerTurn && g.TurnCounter > 10 {
+	if g.Turn == state.PlayerTurn && g.TurnCounter > 10 {
 		TryMovePlayer(g)
 	}
-	g.Turn = PlayerTurn
+	g.Turn = state.PlayerTurn
 	return nil
-}
-
-func (lvl *Level) DrawLevel(screen *ebiten.Image) {
-	gd := NewGameData()
-	for x := 0; x < gd.ScreenWidth; x++ {
-		for y := 0; y < gd.ScreenHeight; y++ {
-			index := lvl.GetIndexFromXY(x, y)
-			isViz := lvl.IsVizToPlayer(x, y)
-			tile := lvl.Tiles[index]
-			if isViz {
-				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
-				screen.DrawImage(tile.Image, op)
-				lvl.Tiles[index].IsRevealed = true
-
-			} else if tile.IsRevealed {
-				op := &ebiten.DrawImageOptions{}
-				op.GeoM.Translate(float64(tile.PixelX), float64(tile.PixelY))
-				op.ColorScale.ScaleAlpha(0.5)
-				screen.DrawImage(tile.Image, op)
-			}
-
-		}
-	}
 }
 
 // to draw every draw cycle
@@ -73,7 +51,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(w, h int) (int, int) {
-	gd := NewGameData()
+	gd := utils.NewGameData()
 	return gd.ScreenWidth * gd.TileWidth, gd.ScreenHeight * gd.TileHeight
 }
 

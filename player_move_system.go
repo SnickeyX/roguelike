@@ -1,11 +1,14 @@
 package main
 
 import (
+	"github.com/SnickeyX/roguelike/state"
+	"github.com/SnickeyX/roguelike/utils"
+	"github.com/SnickeyX/roguelike/world"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func TryMovePlayer(g *Game) {
-	gd := NewGameData()
+	gd := utils.NewGameData()
 	players := g.WorldTags["players"]
 	x := 0
 	y := 0
@@ -26,7 +29,7 @@ func TryMovePlayer(g *Game) {
 
 	// probably should not move all players but oh well
 	for _, result := range g.World.Query(players) {
-		pos := result.Components[position].(*Position)
+		pos := result.Components[world.Position].(*utils.Position)
 		new_x := (pos.X + x) % gd.ScreenWidth
 		new_y := (pos.Y + y)
 
@@ -49,7 +52,7 @@ func TryMovePlayer(g *Game) {
 	}
 
 	if x != 0 || y != 0 {
-		g.Turn = GetNextState(g.Turn)
+		g.Turn = state.GetNextState(g.Turn)
 		g.TurnCounter = 0
 	}
 }

@@ -1,4 +1,4 @@
-package main
+package utils
 
 func min(x int, y int) int {
 	if x < y {

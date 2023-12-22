@@ -1,4 +1,4 @@
-package main
+package utils
 
 // rect, (x1,y1) : top left point, (x2,y2): bottom right point
 type Rect struct {

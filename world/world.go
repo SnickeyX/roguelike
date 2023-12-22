@@ -1,16 +1,18 @@
-package main
+package world
 
 // implementing the ECS system
 
 import (
 	"log"
 
+	"github.com/SnickeyX/roguelike/utils"
 	"github.com/bytearena/ecs"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-var position *ecs.Component
-var rendarable *ecs.Component
+// captialised for Go to allow exporting
+var Position *ecs.Component
+var Rendarable *ecs.Component
 
 func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	tags := make(map[string]ecs.Tag)
@@ -18,8 +20,8 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 
 	//More stuff will go here
 	player := manager.NewComponent()
-	position = manager.NewComponent()
-	rendarable = manager.NewComponent()
+	Position = manager.NewComponent()
+	Rendarable = manager.NewComponent()
 	movable := manager.NewComponent()
 
 	// to ensure player always starts in a room and not a wall
@@ -34,20 +36,20 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	}
 
 	manager.NewEntity().
-		AddComponent(player, Player{}).
-		AddComponent(rendarable,
-			&Renderable{Image: playerImg}).
-		AddComponent(movable, Movable{}).
-		AddComponent(position, &Position{
+		AddComponent(player, utils.Player{}).
+		AddComponent(Rendarable,
+			&utils.Renderable{Image: playerImg}).
+		AddComponent(movable, utils.Movable{}).
+		AddComponent(Position, &utils.Position{
 			// middle of the screen
 			X: x,
 			Y: y,
 		})
 
-	players := ecs.BuildTag(player, position)
+	players := ecs.BuildTag(player, Position)
 	tags["players"] = players
 
-	renderables := ecs.BuildTag(rendarable, position)
+	renderables := ecs.BuildTag(Rendarable, Position)
 	tags["renderables"] = renderables
 
 	return manager, tags

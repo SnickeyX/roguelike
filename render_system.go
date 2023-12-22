@@ -1,11 +1,15 @@
 package main
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/SnickeyX/roguelike/utils"
+	"github.com/SnickeyX/roguelike/world"
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
-func ProcessRenderables(g *Game, level Level, screen *ebiten.Image) {
+func ProcessRenderables(g *Game, level world.Level, screen *ebiten.Image) {
 	for _, res := range g.World.Query(g.WorldTags["renderables"]) {
-		pos := res.Components[position].(*Position)
-		img := res.Components[rendarable].(*Renderable).Image
+		pos := res.Components[world.Position].(*utils.Position)
+		img := res.Components[world.Rendarable].(*utils.Renderable).Image
 
 		index := level.GetIndexFromXY(pos.X, pos.Y)
 		tile := level.Tiles[index]

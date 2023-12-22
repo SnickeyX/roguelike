@@ -1,4 +1,4 @@
-package main
+package world
 
 // container for dungeons (i.e. the entire game world)
 type GameMap struct {

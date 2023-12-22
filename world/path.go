@@ -1,10 +1,9 @@
-package main
-
-// Aim: create a graph from a Rect (from endpoints), run Dijkstr
+package world
 
 import (
 	"log"
 
+	"github.com/SnickeyX/roguelike/utils"
 	"github.com/dominikbraun/graph"
 )
 
@@ -37,7 +36,7 @@ func (level *Level) CreateGraph(p1, p2 *Point) graph.Graph[int, *Point] {
 				e = g.AddEdge(
 					level.GetIndexFromXY(x, y),
 					level.GetIndexFromXY(x+1, y),
-					graph.EdgeWeight(GetDiceRoll(4)))
+					graph.EdgeWeight(utils.GetDiceRoll(4)))
 				if e != nil && e != graph.ErrEdgeAlreadyExists {
 					log.Fatal(e)
 				}
@@ -46,7 +45,7 @@ func (level *Level) CreateGraph(p1, p2 *Point) graph.Graph[int, *Point] {
 				e = g.AddEdge(
 					level.GetIndexFromXY(x, y),
 					level.GetIndexFromXY(x-1, y),
-					graph.EdgeWeight(GetDiceRoll(4)))
+					graph.EdgeWeight(utils.GetDiceRoll(4)))
 				if e != nil && e != graph.ErrEdgeAlreadyExists {
 					log.Fatal(e)
 				}
@@ -55,7 +54,7 @@ func (level *Level) CreateGraph(p1, p2 *Point) graph.Graph[int, *Point] {
 				e = g.AddEdge(
 					level.GetIndexFromXY(x, y),
 					level.GetIndexFromXY(x, y+1),
-					graph.EdgeWeight(GetDiceRoll(4)))
+					graph.EdgeWeight(utils.GetDiceRoll(4)))
 				if e != nil && e != graph.ErrEdgeAlreadyExists {
 					log.Fatal(e)
 				}
@@ -64,7 +63,7 @@ func (level *Level) CreateGraph(p1, p2 *Point) graph.Graph[int, *Point] {
 				e = g.AddEdge(
 					level.GetIndexFromXY(x, y),
 					level.GetIndexFromXY(x, y-1),
-					graph.EdgeWeight(GetDiceRoll(4)))
+					graph.EdgeWeight(utils.GetDiceRoll(4)))
 				if e != nil && e != graph.ErrEdgeAlreadyExists {
 					log.Fatal(e)
 				}

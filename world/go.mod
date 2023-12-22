@@ -1,17 +1,13 @@
-module github.com/SnickeyX/roguelike
-
-go 1.21.5
+module github.com/SnickeyX/roguelike/world
 
 require (
-	github.com/SnickeyX/roguelike/state v0.0.0-00010101000000-000000000000
 	github.com/SnickeyX/roguelike/utils v0.0.0-00010101000000-000000000000
-	github.com/SnickeyX/roguelike/world v0.0.0-00010101000000-000000000000
 	github.com/bytearena/ecs v1.0.0
+	github.com/dominikbraun/graph v0.23.0
 	github.com/hajimehoshi/ebiten/v2 v2.6.3
 )
 
 require (
-	github.com/dominikbraun/graph v0.23.0 // indirect
 	github.com/ebitengine/purego v0.5.0 // indirect
 	github.com/jezek/xgb v1.1.0 // indirect
 	golang.org/x/exp/shiny v0.0.0-20230817173708-d852ddb80c63 // indirect
@@ -21,8 +17,6 @@ require (
 	golang.org/x/sys v0.12.0 // indirect
 )
 
-replace github.com/SnickeyX/roguelike/world => ./world
+replace github.com/SnickeyX/roguelike/utils => ../utils
 
-replace github.com/SnickeyX/roguelike/state => ./state
-
-replace github.com/SnickeyX/roguelike/utils => ./utils
+go 1.21.5

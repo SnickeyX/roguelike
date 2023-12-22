@@ -1,4 +1,4 @@
-package main
+package utils
 
 type GameData struct {
 	ScreenWidth  int

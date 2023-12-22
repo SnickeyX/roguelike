@@ -1,4 +1,4 @@
-package main
+package world
 
 // container for multiple levels
 type Dungeon struct {
