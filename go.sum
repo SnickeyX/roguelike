@@ -1,3 +1,7 @@
+github.com/bytearena/ecs v1.0.0 h1:azwCN52dJZz2KwPoyqU4s1MMw9J9rD+65B30D4qVSj4=
+github.com/bytearena/ecs v1.0.0/go.mod h1:RDqayRmo2imxvASJif+btnZpjbMovNlsBTctJv5dWRQ=
+github.com/dominikbraun/graph v0.23.0 h1:TdZB4pPqCLFxYhdyMFb1TBdFxp8XLcJfTTBQucVPgCo=
+github.com/dominikbraun/graph v0.23.0/go.mod h1:yOjYyogZLY1LSG9E33JWZJiq5k83Qy2C6POAuiViluc=
 github.com/ebitengine/purego v0.5.0 h1:JrMGKfRIAM4/QVKaesIIT7m/UVjTj5GYhRSQYwfVdpo=
 github.com/ebitengine/purego v0.5.0/go.mod h1:ah1In8AOtksoNK6yk5z1HTJeUkC1Ez4Wk2idgGslMwQ=
 github.com/hajimehoshi/ebiten/v2 v2.6.3 h1:xJ5klESxhflZbPUx3GdIPoITzgPgamsyv8aZCVguXGI=

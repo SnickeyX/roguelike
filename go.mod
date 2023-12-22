@@ -2,7 +2,11 @@ module github.com/SnickeyX/roguelike
 
 go 1.21.5
 
-require github.com/hajimehoshi/ebiten/v2 v2.6.3
+require (
+	github.com/bytearena/ecs v1.0.0
+	github.com/dominikbraun/graph v0.23.0
+	github.com/hajimehoshi/ebiten/v2 v2.6.3
+)
 
 require (
 	github.com/ebitengine/purego v0.5.0 // indirect
