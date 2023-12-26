@@ -23,3 +23,6 @@ assets
 
 # graphs 
 *gv 
+
+# apple
+.DS_Store

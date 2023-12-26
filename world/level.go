@@ -10,6 +10,13 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
+type TileType int
+
+const (
+	WALL TileType = iota
+	FLOOR
+)
+
 // Level holds the tile information for a complete dungeon level.
 type Level struct {
 	// Tiles are ordered row-by-row, left-to-right
@@ -35,6 +42,7 @@ type MapTile struct {
 	Blocked    bool
 	IsRevealed bool
 	Image      *ebiten.Image
+	TileType   TileType
 }
 
 // GetIndexFromXY gets the index of the map array from a given X,Y TILE coordinate.
@@ -91,6 +99,7 @@ func (level *Level) CreateTiles() []MapTile {
 				Blocked:    true,
 				IsRevealed: false,
 				Image:      wall,
+				TileType:   WALL,
 			}
 			tiles[index] = tile
 		}
@@ -104,6 +113,7 @@ func (level *Level) createRoom(room utils.Rect) {
 		for x := room.X1 + 1; x < room.X2; x++ {
 			index := level.GetIndexFromXY(x, y)
 			level.Tiles[index].Blocked = false
+			level.Tiles[index].TileType = FLOOR
 			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
 			if err != nil {
 				log.Fatal(err)
@@ -186,6 +196,7 @@ func (level *Level) CreateHorizontalTunnel(x1 int, x2 int, y int) {
 		index := level.GetIndexFromXY(i, y)
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			level.Tiles[index].Blocked = false
+			level.Tiles[index].TileType = FLOOR
 			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
 			if err != nil {
 				log.Fatal(err)
@@ -202,6 +213,7 @@ func (level *Level) CreateVerticalTunnel(y1 int, y2 int, x int) {
 		index := level.GetIndexFromXY(x, i)
 		if index > 0 && index < gd.ScreenHeight*gd.ScreenWidth {
 			level.Tiles[index].Blocked = false
+			level.Tiles[index].TileType = FLOOR
 			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
 			if err != nil {
 				log.Fatal(err)
@@ -216,6 +228,7 @@ func (level *Level) CreateTunnelFromIndexes(indexes []int) {
 	for _, index := range indexes {
 		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
 			level.Tiles[index].Blocked = false
+			level.Tiles[index].TileType = FLOOR
 			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
 			if err != nil {
 				log.Fatal(err)
