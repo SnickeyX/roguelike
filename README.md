@@ -1,6 +1,11 @@
 # Roguelike (WIP)
 
-Procedurally generated dungeon-crawler (possibly as a webapp)
+Procedurally generated dungeon-crawler
+
+Usage:  
+`python run_game.py` serves localhost with the game
+or 
+`go run .` to run locally
 
 To-Do:
 - Player HUD
@@ -14,5 +19,5 @@ To-Do:
 Why? 
 I was bored, wanted to make a game and learn Go.
 
-Assets:
+Assets:   
 https://anokolisa.itch.io/dungeon-crawler-pixel-art-asset-pack
