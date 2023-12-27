@@ -19,7 +19,6 @@ go.work
 
 # assets
 rrogue*
-assets
 
 # graphs 
 *gv 
