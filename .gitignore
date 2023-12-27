@@ -25,3 +25,7 @@ rrogue*
 
 # apple
 .DS_Store
+
+# webapp
+*.wasm
+*.js
