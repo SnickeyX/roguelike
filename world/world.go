@@ -3,11 +3,8 @@ package world
 // implementing the ECS system
 
 import (
-	"log"
-
 	"github.com/SnickeyX/roguelike/utils"
 	"github.com/bytearena/ecs"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 // captialised for Go to allow exporting
@@ -32,20 +29,10 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	// init player location
 	startingLevel.PlayerLoc[0], startingLevel.PlayerLoc[1] = x, y
 
-	playerImg, _, err := ebitenutil.NewImageFromFile("assets/knight_idle_1.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	skellyImg, _, err := ebitenutil.NewImageFromFile("assets/skele_idle_1.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	manager.NewEntity().
 		AddComponent(player, &utils.Player{}).
 		AddComponent(Rendarable,
-			&utils.Renderable{Image: playerImg}).
+			&utils.Renderable{Image: utils.PlayerImg}).
 		AddComponent(movable, utils.Movable{}).
 		AddComponent(Position, &utils.Position{
 			// middle of the screen
@@ -59,7 +46,7 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 			manager.NewEntity().
 				AddComponent(Monster, &utils.Monster{Name: "Skeleton"}).
 				AddComponent(Rendarable,
-					&utils.Renderable{Image: skellyImg}).
+					&utils.Renderable{Image: utils.SkeleIdleImg}).
 				AddComponent(Position, &utils.Position{
 					// middle of the screen
 					X: cX,

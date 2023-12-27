@@ -6,7 +6,6 @@ import (
 	"github.com/SnickeyX/roguelike/utils"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type TileType int
@@ -46,14 +45,12 @@ type MapTile struct {
 
 // GetIndexFromXY gets the index of the map array from a given X,Y TILE coordinate.
 func (level *Level) GetIndexFromXY(x, y int) int {
-	gd := utils.NewGameData()
-	return (y * gd.ScreenWidth) + x
+	return (y * utils.GameConstants.ScreenWidth) + x
 }
 
 func (lvl *Level) DrawLevel(screen *ebiten.Image) {
-	gd := utils.NewGameData()
-	for x := 0; x < gd.ScreenWidth; x++ {
-		for y := 0; y < gd.ScreenHeight; y++ {
+	for x := 0; x < utils.GameConstants.ScreenWidth; x++ {
+		for y := 0; y < utils.GameConstants.ScreenHeight; y++ {
 			index := lvl.GetIndexFromXY(x, y)
 			isViz := lvl.IsVizToPlayer(x, y)
 			tile := lvl.Tiles[index]
@@ -82,21 +79,16 @@ func (level *Level) IsVizToPlayer(x, y int) bool {
 
 // everything is a wall initially
 func (level *Level) CreateTiles() []*MapTile {
-	gd := utils.NewGameData()
-	tiles := make([]*MapTile, gd.ScreenHeight*gd.ScreenWidth)
-	for x := 0; x < gd.ScreenWidth; x++ {
-		for y := 0; y < gd.ScreenHeight; y++ {
+	tiles := make([]*MapTile, utils.GameConstants.ScreenHeight*utils.GameConstants.ScreenWidth)
+	for x := 0; x < utils.GameConstants.ScreenWidth; x++ {
+		for y := 0; y < utils.GameConstants.ScreenHeight; y++ {
 			index := level.GetIndexFromXY(x, y)
-			wall, _, err := ebitenutil.NewImageFromFile("assets/wall.png")
-			if err != nil {
-				log.Fatal(err)
-			}
 			tile := MapTile{
-				PixelX:     x * gd.TileWidth,
-				PixelY:     y * gd.TileHeight,
+				PixelX:     x * utils.GameConstants.TileWidth,
+				PixelY:     y * utils.GameConstants.TileHeight,
 				Blocked:    true,
 				IsRevealed: false,
-				Image:      wall,
+				Image:      utils.WallImg,
 				TileType:   WALL,
 			}
 			tiles[index] = &tile
@@ -112,11 +104,7 @@ func (level *Level) createRoom(room utils.Rect) {
 			index := level.GetIndexFromXY(x, y)
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = FLOOR
-			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
-			if err != nil {
-				log.Fatal(err)
-			}
-			level.Tiles[index].Image = floor
+			level.Tiles[index].Image = utils.FloorImg
 
 		}
 	}
@@ -129,7 +117,6 @@ func (level *Level) GenerateLevelTiles() {
 	MAX_ROOMS := 30
 	contains_rooms := false
 
-	gd := utils.NewGameData()
 	tiles := level.CreateTiles()
 	level.Tiles = tiles
 
@@ -138,8 +125,8 @@ func (level *Level) GenerateLevelTiles() {
 		w := utils.GetRandomBetweenTwo(MIN_RECT_SIZE, MAX_RECT_SIZE)
 		h := utils.GetRandomBetweenTwo(MIN_RECT_SIZE, MAX_RECT_SIZE)
 		// choosing a starting top left of the room
-		x := utils.GetDiceRoll(gd.ScreenWidth - w - 1)
-		y := utils.GetDiceRoll(gd.ScreenHeight - h - 1)
+		x := utils.GetDiceRoll(utils.GameConstants.ScreenWidth - w - 1)
+		y := utils.GetDiceRoll(utils.GameConstants.ScreenHeight - h - 1)
 
 		new_room := utils.NewRect(x, y, w, h)
 		canAdd := true
@@ -193,49 +180,34 @@ func (level *Level) CreatePathForRoom(new_room utils.Rect) {
 
 // tunnel between two pixel points (x1,y) and (x2,y)
 func (level *Level) CreateHorizontalTunnel(x1 int, x2 int, y int) {
-	gd := utils.NewGameData()
 	for i := min(x1, x2); i < max(x1, x2)+1; i++ {
 		index := level.GetIndexFromXY(i, y)
-		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
+		if index > 0 && index < utils.GameConstants.ScreenWidth*utils.GameConstants.ScreenHeight {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = FLOOR
-			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
-			if err != nil {
-				log.Fatal(err)
-			}
-			level.Tiles[index].Image = floor
+			level.Tiles[index].Image = utils.FloorImg
 		}
 	}
 }
 
 // tunnel between two pixel points (x,y1) and (x,y2)
 func (level *Level) CreateVerticalTunnel(y1 int, y2 int, x int) {
-	gd := utils.NewGameData()
 	for i := min(y1, y2); i < max(y1, y2)+1; i++ {
 		index := level.GetIndexFromXY(x, i)
-		if index > 0 && index < gd.ScreenHeight*gd.ScreenWidth {
+		if index > 0 && index < utils.GameConstants.ScreenHeight*utils.GameConstants.ScreenWidth {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = FLOOR
-			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
-			if err != nil {
-				log.Fatal(err)
-			}
-			level.Tiles[index].Image = floor
+			level.Tiles[index].Image = utils.FloorImg
 		}
 	}
 }
 
 func (level *Level) CreateTunnelFromIndexes(indexes []int) {
-	gd := utils.NewGameData()
 	for _, index := range indexes {
-		if index > 0 && index < gd.ScreenWidth*gd.ScreenHeight {
+		if index > 0 && index < utils.GameConstants.ScreenWidth*utils.GameConstants.ScreenHeight {
 			level.Tiles[index].Blocked = false
 			level.Tiles[index].TileType = FLOOR
-			floor, _, err := ebitenutil.NewImageFromFile("assets/floor.png")
-			if err != nil {
-				log.Fatal(err)
-			}
-			level.Tiles[index].Image = floor
+			level.Tiles[index].Image = utils.FloorImg
 		}
 	}
 }

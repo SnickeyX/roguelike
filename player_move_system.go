@@ -9,7 +9,6 @@ import (
 
 func TryMovePlayer(g *Game) {
 	turnTaken := false
-	gd := utils.NewGameData()
 	players := g.WorldTags["players"]
 	x := 0
 	y := 0
@@ -35,14 +34,14 @@ func TryMovePlayer(g *Game) {
 	// probably should not move all players but oh well
 	for _, result := range g.World.Query(players) {
 		pos := result.Components[world.Position].(*utils.Position)
-		new_x := (pos.X + x) % gd.ScreenWidth
+		new_x := (pos.X + x) % utils.GameConstants.ScreenWidth
 		new_y := (pos.Y + y)
 
 		// out-of-bounds prot
 		if new_y <= 0 {
-			new_y = gd.ScreenHeight - 1
+			new_y = utils.GameConstants.ScreenHeight - 1
 		}
-		if new_y > gd.ScreenHeight-1 {
+		if new_y > utils.GameConstants.ScreenHeight-1 {
 			new_y = 1
 		}
 

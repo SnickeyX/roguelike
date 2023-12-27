@@ -24,6 +24,7 @@ type Game struct {
 
 func NewGame() *Game {
 	g := &Game{}
+	utils.LoadAllAssets()
 	g.Map = world.NewGameMap()
 	world, tags := world.InitializeWorld(g.Map.CurrentLevel)
 	g.World = world
@@ -53,8 +54,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(w, h int) (int, int) {
-	gd := utils.NewGameData()
-	return gd.ScreenWidth * gd.TileWidth, gd.ScreenHeight * gd.TileHeight
+	width := utils.GameConstants.ScreenWidth * utils.GameConstants.TileWidth
+	height := utils.GameConstants.ScreenHeight * utils.GameConstants.TileHeight
+	return width, height
 }
 
 func main() {

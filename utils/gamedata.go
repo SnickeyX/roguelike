@@ -16,3 +16,5 @@ func NewGameData() GameData {
 	}
 	return g
 }
+
+var GameConstants GameData = NewGameData()

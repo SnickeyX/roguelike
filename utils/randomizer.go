@@ -21,12 +21,5 @@ func GetDiceRoll(num int) int {
 }
 
 func GetRandomBetweenTwo(low int, high int) int {
-	var r int = -1
-	for {
-		r = GetDiceRoll(high)
-		if r >= low {
-			break
-		}
-	}
-	return r
+	return GetDiceRoll(high-low) + low
 }
