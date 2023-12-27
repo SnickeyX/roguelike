@@ -68,7 +68,7 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 		}
 	}
 
-	monsters := ecs.BuildTag(Monster, Position)
+	monsters := ecs.BuildTag(Monster, Position, Rendarable)
 	tags["monsters"] = monsters
 
 	players := ecs.BuildTag(player, Position)

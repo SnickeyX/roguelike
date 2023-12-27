@@ -19,7 +19,7 @@ const (
 // Level holds the tile information for a complete dungeon level.
 type Level struct {
 	// Tiles are ordered row-by-row, left-to-right
-	Tiles     []MapTile
+	Tiles     []*MapTile
 	Rooms     []utils.Rect
 	PlayerLoc []int
 	FovDist   float64 // radius of player FOV
@@ -81,9 +81,9 @@ func (level *Level) IsVizToPlayer(x, y int) bool {
 }
 
 // everything is a wall initially
-func (level *Level) CreateTiles() []MapTile {
+func (level *Level) CreateTiles() []*MapTile {
 	gd := utils.NewGameData()
-	tiles := make([]MapTile, gd.ScreenHeight*gd.ScreenWidth)
+	tiles := make([]*MapTile, gd.ScreenHeight*gd.ScreenWidth)
 	for x := 0; x < gd.ScreenWidth; x++ {
 		for y := 0; y < gd.ScreenHeight; y++ {
 			index := level.GetIndexFromXY(x, y)
@@ -99,7 +99,7 @@ func (level *Level) CreateTiles() []MapTile {
 				Image:      wall,
 				TileType:   WALL,
 			}
-			tiles[index] = tile
+			tiles[index] = &tile
 		}
 	}
 	return tiles
@@ -173,7 +173,11 @@ func (level *Level) CreatePathForRoom(new_room utils.Rect) {
 	flipRes1 := utils.GetDiceRoll(2)
 
 	if flipRes1 == 1 {
-		indexes := level.GetShortestPath(newX, newY, prevX, prevY)
+		// get random path without any care for blocked tiles
+		indexes := level.GetPath(newX, newY, prevX, prevY, true, false)
+		if indexes == nil {
+			log.Fatal("Unable to carve level!")
+		}
 		level.CreateTunnelFromIndexes(indexes)
 	} else {
 		flipRes2 := utils.GetDiceRoll(2)

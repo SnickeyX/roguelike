@@ -8,6 +8,7 @@ import (
 )
 
 func TryMovePlayer(g *Game) {
+	turnTaken := false
 	gd := utils.NewGameData()
 	players := g.WorldTags["players"]
 	x := 0
@@ -23,6 +24,10 @@ func TryMovePlayer(g *Game) {
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		x = 1
+	}
+	// skip turn key
+	if ebiten.IsKeyPressed(ebiten.KeyQ) {
+		turnTaken = true
 	}
 
 	level := g.Map.CurrentLevel
@@ -45,13 +50,16 @@ func TryMovePlayer(g *Game) {
 		tile := level.Tiles[index]
 
 		if !tile.Blocked {
+			level.Tiles[level.GetIndexFromXY(pos.X, pos.Y)].Blocked = false
+
 			level.PlayerLoc[0], level.PlayerLoc[1] = new_x, new_y
 			pos.X = new_x
 			pos.Y = new_y
+			level.Tiles[index].Blocked = true
 		}
 	}
 
-	if x != 0 || y != 0 {
+	if x != 0 || y != 0 || turnTaken {
 		g.Turn = state.GetNextState(g.Turn)
 		g.TurnCounter = 0
 	}
