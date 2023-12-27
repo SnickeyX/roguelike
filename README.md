@@ -12,4 +12,7 @@ To-Do:
 - Starting GUI
 
 Why? 
-I was bored, wanted to make a game and learn Go. 
+I was bored, wanted to make a game and learn Go.
+
+Assets:
+https://anokolisa.itch.io/dungeon-crawler-pixel-art-asset-pack
