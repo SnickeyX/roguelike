@@ -2,7 +2,6 @@ package world
 
 import (
 	"log"
-	"math"
 
 	"github.com/SnickeyX/roguelike/utils"
 
@@ -77,8 +76,7 @@ func (lvl *Level) DrawLevel(screen *ebiten.Image) {
 
 func (level *Level) IsVizToPlayer(x, y int) bool {
 	px, py := level.PlayerLoc[0], level.PlayerLoc[1]
-	// euclidian dist
-	d := math.Sqrt(math.Pow(float64(y-py), 2) + math.Pow(float64(x-px), 2))
+	d := utils.EuclidianDist(x, y, px, py)
 	return d < level.FovDist
 }
 

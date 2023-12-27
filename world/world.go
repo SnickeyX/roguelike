@@ -13,6 +13,7 @@ import (
 // captialised for Go to allow exporting
 var Position *ecs.Component
 var Rendarable *ecs.Component
+var Monster *ecs.Component
 
 func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	tags := make(map[string]ecs.Tag)
@@ -20,7 +21,7 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 
 	//More stuff will go here
 	player := manager.NewComponent()
-	monster := manager.NewComponent()
+	Monster = manager.NewComponent()
 	Position = manager.NewComponent()
 	Rendarable = manager.NewComponent()
 	movable := manager.NewComponent()
@@ -42,7 +43,7 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	}
 
 	manager.NewEntity().
-		AddComponent(player, utils.Player{}).
+		AddComponent(player, &utils.Player{}).
 		AddComponent(Rendarable,
 			&utils.Renderable{Image: playerImg}).
 		AddComponent(movable, utils.Movable{}).
@@ -56,7 +57,7 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 		if room.X1 != startingRoom.X1 {
 			cX, cY := room.Center()
 			manager.NewEntity().
-				AddComponent(monster, utils.Player{}).
+				AddComponent(Monster, &utils.Monster{Name: "Skeleton"}).
 				AddComponent(Rendarable,
 					&utils.Renderable{Image: skellyImg}).
 				AddComponent(Position, &utils.Position{
@@ -66,6 +67,9 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 				})
 		}
 	}
+
+	monsters := ecs.BuildTag(Monster, Position)
+	tags["monsters"] = monsters
 
 	players := ecs.BuildTag(player, Position)
 	tags["players"] = players
