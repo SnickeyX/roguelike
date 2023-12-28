@@ -20,7 +20,8 @@ func AttackSystem(g *Game, attackerQ *ecs.QueryResult, defenderQ *ecs.QueryResul
 	// hit
 	if d12+attackerWeapon.BonusDmg > defenderArmor.Class {
 		// variable total damage
-		total_dmg := utils.GetRandomBetweenTwo(attackerWeapon.MinDmg, attackerWeapon.MaxDmg) - defenderArmor.Def
+		total_dmg := utils.GetRandomBetweenTwo(attackerWeapon.MinDmg,
+			attackerWeapon.MaxDmg) - defenderArmor.Def
 		if total_dmg < 0 {
 			total_dmg = 0
 		}

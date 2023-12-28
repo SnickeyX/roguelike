@@ -3,6 +3,8 @@ package world
 // implementing the ECS system
 
 import (
+	"fmt"
+
 	"github.com/SnickeyX/roguelike/utils"
 	"github.com/bytearena/ecs"
 )
@@ -53,12 +55,14 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 			Y: y,
 		})
 
+	skele_num := 0
 	for _, room := range startingLevel.Rooms {
 		if room.X1 != startingRoom.X1 {
+			skele_num++
 			cX, cY := room.Center()
 			manager.NewEntity().
 				AddComponent(Monster, &utils.Monster{}).
-				AddComponent(Name, &utils.Name{Label: "Skeleton"}).
+				AddComponent(Name, &utils.Name{Label: fmt.Sprintf("Skeleton%v", skele_num)}).
 				AddComponent(Armor, &utils.Armor{Name: "bones", Def: 1, Class: 1}).
 				AddComponent(Health, &utils.Health{MaxHP: 5, CurrHP: 5}).
 				AddComponent(MeleeWeapon,

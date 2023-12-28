@@ -40,6 +40,16 @@ func NewGame() *Game {
 
 // update frame at each tic, 60hz by defualt
 func (g *Game) Update() error {
+	if g.Turn == state.GameOver {
+		// add game over screen
+		return nil
+	}
+
+	// nothing before player action for now
+	if g.Turn == state.BeforePlayerAction {
+		g.Turn = state.GetNextState(g.Turn)
+	}
+
 	g.TurnCounter++
 	if g.Turn == state.PlayerTurn && g.TurnCounter > 10 {
 		TakePlayerAction(g)
@@ -60,7 +70,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		(utils.GameConstants.ScreenWidth*utils.GameConstants.TileWidth)/3,
 		(utils.GameConstants.ScreenHeight*utils.GameConstants.TileHeight)-
 			((utils.GameConstants.UiHeight*utils.GameConstants.TileHeight)/2))
-	if logTics > 300 {
+	if logTics > 500 {
 		logTics = 0
 		// clear
 		LogMessage = ""

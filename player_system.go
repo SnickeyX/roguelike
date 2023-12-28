@@ -32,6 +32,7 @@ func TakePlayerAction(g *Game) {
 
 	level := g.Map.CurrentLevel
 
+	// single-player, so this isn't really a loop (for now)
 	for _, playerQ := range g.World.Query(players) {
 		pos := playerQ.Components[world.Position].(*utils.Position)
 		new_x := (pos.X + x) % utils.GameConstants.ScreenWidth
@@ -62,6 +63,8 @@ func TakePlayerAction(g *Game) {
 					mon_p := monQ.Components[world.Position].(*utils.Position)
 					d := utils.ChebyshevDist(pos.X, pos.Y, mon_p.X, mon_p.Y)
 					if d <= float64(aoe) {
+						// after attacking, turn done
+						turnTaken = true
 						AttackSystem(g, playerQ, monQ)
 						curr_hits++
 					}
