@@ -27,24 +27,26 @@ func AttackSystem(g *Game, attackerQ *ecs.QueryResult, defenderQ *ecs.QueryResul
 		}
 		defenderHealth := defenderQ.Components[world.Health].(*utils.Health)
 		defenderHealth.CurrHP -= total_dmg
-		LogMessage += fmt.Sprintf("%s swings %s at %s and hits for %d health.\n",
-			attackerName, attackerWeapon.Name, defenderName, total_dmg)
+
+		// TODO: replace this with animations
+		Logger.Display(fmt.Sprintf("%s swings %s at %s and hits for %d health.\n",
+			attackerName, attackerWeapon.Name, defenderName, total_dmg))
 
 		if defenderHealth.CurrHP <= 0 {
-			LogMessage += fmt.Sprintf("%s has died!\n", defenderName)
+			Logger.Display(fmt.Sprintf("%s has died!\n", defenderName))
 			if defenderName == "Snickey" {
-				LogMessage += "Snickey died .... Game Over!\n"
+				Logger.Display("Snickey died .... Game Over!\n")
 				g.Turn = state.GameOver
 			}
 			g.World.DisposeEntity(defenderQ.Entity)
-			// unblock tile after monster dies
+			// unblock tile aftermonster dies
 			pos := defenderQ.Components[world.Position].(*utils.Position)
 			index := g.Map.CurrentLevel.GetIndexFromXY(pos.X, pos.Y)
 			g.Map.CurrentLevel.Tiles[index].Blocked = false
 		}
 	} else {
-		LogMessage += fmt.Sprintf("%s swings %s at %s and misses!.\n",
-			attackerName, attackerWeapon.Name, defenderName)
+		Logger.Display(fmt.Sprintf("%s swings %s at %s and misses!.\n",
+			attackerName, attackerWeapon.Name, defenderName))
 	}
 
 }
