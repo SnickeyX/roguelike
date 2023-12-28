@@ -7,9 +7,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func TryMovePlayer(g *Game) {
+func TakePlayerAction(g *Game) {
 	turnTaken := false
 	players := g.WorldTags["players"]
+
 	x := 0
 	y := 0
 	if ebiten.IsKeyPressed(ebiten.KeyUp) {
@@ -31,9 +32,8 @@ func TryMovePlayer(g *Game) {
 
 	level := g.Map.CurrentLevel
 
-	// probably should not move all players but oh well
-	for _, result := range g.World.Query(players) {
-		pos := result.Components[world.Position].(*utils.Position)
+	for _, playerQ := range g.World.Query(players) {
+		pos := playerQ.Components[world.Position].(*utils.Position)
 		new_x := (pos.X + x) % utils.GameConstants.ScreenWidth
 		new_y := (pos.Y + y)
 
@@ -55,6 +55,26 @@ func TryMovePlayer(g *Game) {
 			pos.X = new_x
 			pos.Y = new_y
 			level.Tiles[index].Blocked = true
+		} else {
+			// player attacks all monsters wihtin its AOE, up to a maximum of num_hits
+			if tile.TileType != world.WALL {
+				p_weapon := playerQ.Components[world.MeleeWeapon].(*utils.MeleeWeapon)
+				aoe := p_weapon.Aoe
+				num_hits := p_weapon.NumHits
+				curr_hits := 0
+				monsters := g.WorldTags["monsters"]
+				for _, monQ := range g.World.Query(monsters) {
+					if curr_hits == num_hits {
+						break
+					}
+					mon_p := monQ.Components[world.Position].(*utils.Position)
+					d := utils.ChebyshevDist(pos.X, pos.Y, mon_p.X, mon_p.Y)
+					if d <= float64(aoe) {
+						AttackSystem(g, playerQ, monQ)
+						curr_hits++
+					}
+				}
+			}
 		}
 	}
 

@@ -11,17 +11,24 @@ import (
 var Position *ecs.Component
 var Rendarable *ecs.Component
 var Monster *ecs.Component
+var Health *ecs.Component
+var MeleeWeapon *ecs.Component
+var Armor *ecs.Component
+var Name *ecs.Component
 
 func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 	tags := make(map[string]ecs.Tag)
 	manager := ecs.NewManager()
 
-	//More stuff will go here
 	player := manager.NewComponent()
 	Monster = manager.NewComponent()
 	Position = manager.NewComponent()
 	Rendarable = manager.NewComponent()
 	movable := manager.NewComponent()
+	Health = manager.NewComponent()
+	MeleeWeapon = manager.NewComponent()
+	Armor = manager.NewComponent()
+	Name = manager.NewComponent()
 
 	// to ensure player always starts in a room and not a wall
 	startingRoom := startingLevel.Rooms[0]
@@ -31,6 +38,12 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 
 	manager.NewEntity().
 		AddComponent(player, &utils.Player{}).
+		AddComponent(Name, &utils.Name{Label: "Snickey"}).
+		AddComponent(Armor, &utils.Armor{Name: "chainmail", Def: 1, Class: 1}).
+		AddComponent(Health, &utils.Health{MaxHP: 10, CurrHP: 10}).
+		AddComponent(MeleeWeapon,
+			&utils.MeleeWeapon{Name: "fists", Level: 1, MinDmg: 1,
+				MaxDmg: 3, BonusDmg: 2, Aoe: 1, NumHits: 1}).
 		AddComponent(Rendarable,
 			&utils.Renderable{Image: utils.PlayerImg}).
 		AddComponent(movable, utils.Movable{}).
@@ -44,7 +57,13 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 		if room.X1 != startingRoom.X1 {
 			cX, cY := room.Center()
 			manager.NewEntity().
-				AddComponent(Monster, &utils.Monster{Name: "Skeleton"}).
+				AddComponent(Monster, &utils.Monster{}).
+				AddComponent(Name, &utils.Name{Label: "Skeleton"}).
+				AddComponent(Armor, &utils.Armor{Name: "bones", Def: 1, Class: 1}).
+				AddComponent(Health, &utils.Health{MaxHP: 5, CurrHP: 5}).
+				AddComponent(MeleeWeapon,
+					&utils.MeleeWeapon{Name: "bone", Level: 1, MinDmg: 0,
+						MaxDmg: 2, BonusDmg: 1, Aoe: 1, NumHits: 1}).
 				AddComponent(Rendarable,
 					&utils.Renderable{Image: utils.SkeleIdleImg}).
 				AddComponent(Position, &utils.Position{
@@ -55,10 +74,10 @@ func InitializeWorld(startingLevel Level) (*ecs.Manager, map[string]ecs.Tag) {
 		}
 	}
 
-	monsters := ecs.BuildTag(Monster, Position, Rendarable)
+	monsters := ecs.BuildTag(Monster, Name, Position, Rendarable, Health, MeleeWeapon, Armor)
 	tags["monsters"] = monsters
 
-	players := ecs.BuildTag(player, Position)
+	players := ecs.BuildTag(player, Name, Position, Health, MeleeWeapon, Armor)
 	tags["players"] = players
 
 	renderables := ecs.BuildTag(Rendarable, Position)

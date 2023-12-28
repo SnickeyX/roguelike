@@ -10,27 +10,34 @@ import (
 
 const MONSTER_FOV = 4
 
-func UpdateMonster(g *Game) {
+func TakeMonsterAction(g *Game) {
 	l := g.Map.CurrentLevel
-	// NOTE: won't work for multiple players, need to query players component to handle that
-	// for single-player atm, this works
-	pX, pY := l.PlayerLoc[0], l.PlayerLoc[1]
+
+	players := g.WorldTags["players"]
+	// NOTE: assuming single-player for the moment
+	player := g.World.Query(players)[0]
+	pos := player.Components[world.Position].(*utils.Position)
+	pX, pY := pos.X, pos.Y
 
 	monsters := g.WorldTags["monsters"]
-
 	for _, res := range g.World.Query(monsters) {
 		pos := res.Components[world.Position].(*utils.Position)
 		ren := res.Components[world.Rendarable].(*utils.Renderable)
-		mon := res.Components[world.Monster].(*utils.Monster)
+		name := res.Components[world.Name].(*utils.Name)
+		aoe := res.Components[world.MeleeWeapon].(*utils.MeleeWeapon).Aoe
 		// dist between monster and player
-		d := utils.EuclidianDist(pX, pY, pos.X, pos.Y)
+		d_e := utils.EuclidianDist(pX, pY, pos.X, pos.Y)
+		d_c := utils.ChebyshevDist(pX, pY, pos.X, pos.Y)
 
-		if d < MONSTER_FOV {
+		// attack player if they are within monster's aoe
+		if d_c <= float64(aoe) {
+			AttackSystem(g, res, player)
+		} else if d_e < MONSTER_FOV {
 			ren.Image = utils.SkeleBuffImg
 			// get random path without any care for blocked tiles
 			indexes := l.GetPath(pX, pY, pos.X, pos.Y, false, true)
 			if indexes == nil || len(indexes) < 2 {
-				log.Printf("%s cant move to player", mon.Name)
+				log.Printf("%s cant move to player", name.Label)
 			} else {
 				next_tile := l.Tiles[indexes[len(indexes)-2]]
 				if !next_tile.Blocked {

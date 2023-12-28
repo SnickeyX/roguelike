@@ -38,10 +38,10 @@ func NewGame() *Game {
 func (g *Game) Update() error {
 	g.TurnCounter++
 	if g.Turn == state.PlayerTurn && g.TurnCounter > 10 {
-		TryMovePlayer(g)
+		TakePlayerAction(g)
 	}
 	if g.Turn == state.MonsterTurn {
-		UpdateMonster(g)
+		TakeMonsterAction(g)
 	}
 	return nil
 }
