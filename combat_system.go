@@ -26,13 +26,13 @@ func AttackSystem(g *Game, attackerQ *ecs.QueryResult, defenderQ *ecs.QueryResul
 		}
 		defenderHealth := defenderQ.Components[world.Health].(*utils.Health)
 		defenderHealth.CurrHP -= total_dmg
-		fmt.Printf("%s swings %s at %s and hits for %d health.\n",
+		LogMessage += fmt.Sprintf("%s swings %s at %s and hits for %d health.\n",
 			attackerName, attackerWeapon.Name, defenderName, total_dmg)
 
 		if defenderHealth.CurrHP <= 0 {
-			fmt.Printf("%s has died!\n", defenderName)
+			LogMessage += fmt.Sprintf("%s has died!\n", defenderName)
 			if defenderName == "Snickey" {
-				fmt.Printf("Snickey died .... Game Over!\n")
+				LogMessage += "Snickey died .... Game Over!\n"
 				g.Turn = state.GameOver
 			}
 			g.World.DisposeEntity(defenderQ.Entity)
@@ -42,7 +42,7 @@ func AttackSystem(g *Game, attackerQ *ecs.QueryResult, defenderQ *ecs.QueryResul
 			g.Map.CurrentLevel.Tiles[index].Blocked = false
 		}
 	} else {
-		fmt.Printf("%s swings %s at %s and misses!.\n",
+		LogMessage += fmt.Sprintf("%s swings %s at %s and misses!.\n",
 			attackerName, attackerWeapon.Name, defenderName)
 	}
 

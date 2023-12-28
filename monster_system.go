@@ -53,4 +53,5 @@ func TakeMonsterAction(g *Game) {
 
 	}
 	g.Turn = state.PlayerTurn
+	g.TurnCounter = 0
 }

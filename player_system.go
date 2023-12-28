@@ -37,14 +37,6 @@ func TakePlayerAction(g *Game) {
 		new_x := (pos.X + x) % utils.GameConstants.ScreenWidth
 		new_y := (pos.Y + y)
 
-		// out-of-bounds prot
-		if new_y <= 0 {
-			new_y = utils.GameConstants.ScreenHeight - 1
-		}
-		if new_y > utils.GameConstants.ScreenHeight-1 {
-			new_y = 1
-		}
-
 		index := g.Map.CurrentLevel.GetIndexFromXY(new_x, new_y)
 		tile := level.Tiles[index]
 
