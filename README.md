@@ -1,4 +1,4 @@
-# Roguelike (WIP)
+# Roguelike
 
 Procedurally generated dungeon-crawler
 
