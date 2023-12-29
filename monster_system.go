@@ -8,7 +8,7 @@ import (
 	"github.com/SnickeyX/roguelike/world"
 )
 
-const MONSTER_FOV = 4
+const MONSTER_FOV = 8
 
 func TakeMonsterAction(g *Game) {
 	l := g.Map.CurrentLevel

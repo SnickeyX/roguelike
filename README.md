@@ -9,8 +9,6 @@ or
 
 To-Do:
 - Player HUD
-- Combat
-- Webapp-ify 
 - More levels 
 - More enemies 
 - More weapons 
